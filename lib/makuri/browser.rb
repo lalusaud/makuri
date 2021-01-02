@@ -1,6 +1,6 @@
 module Makuri
   class Browser
-    attr_accessor :url, :headers
+    attr_accessor :url, :render_js, :user_agent
 
     def initialize(options = {})
       @url        = options.fetch(:url, '')

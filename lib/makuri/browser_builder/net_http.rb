@@ -1,13 +1,7 @@
 require 'net/http'
 
 module Makuri::BrowserBuilder
-  class NetHttp
-    attr_accessor :user_agent
-
-    def initialize(options)
-      @user_agent = options.fetch(:user_agent, 'Makuri')
-    end
-
+  class NetHttp < Base
     def visit(url)
       uri = URI(url)
       request = Net::HTTP::Get.new uri

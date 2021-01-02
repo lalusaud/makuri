@@ -10,7 +10,15 @@ class MakuriTest < Minitest::Test
     url = 'http://www.example.com'
     stub_request(:get, url).to_return(body: 'test')
 
-    req = Makuri::Browser.new(url: url).run
-    assert_equal req, 'test'
+    res = Makuri::Browser.new(url: url).run
+    assert_equal res, 'test'
+  end
+
+  def test_run_with_js
+    url = 'http://www.example.com'
+
+    # Selenium Webdriver makes call to remote site, need to find a way to mock this
+    res = Makuri::Browser.new(url: url, render_js: true).run
+    assert_includes res, 'Example Domain'
   end
 end
