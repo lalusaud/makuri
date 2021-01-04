@@ -1,9 +1,9 @@
 module Makuri
   class Browser
-    attr_accessor :url, :render_js, :user_agent, :request_method, :request_body
+    attr_accessor :current_url, :render_js, :user_agent, :request_method, :request_body
 
     def initialize(options = {})
-      @url            = options.fetch(:url, '')
+      @current_url    = options.fetch(:url, '')
       @request_method = options.fetch(:request_method, :get)
       @request_body   = options.fetch(:request_body, {})
 
@@ -14,10 +14,12 @@ module Makuri
       )
     end
 
-    def run
-      raise 'Invalid URL supplied' if url.to_s.empty?
+    def follow(url = '')
+      @current_url = url unless url.empty?
+      raise 'Invalid URL supplied' if @current_url.empty?
 
-      create_browser.visit(url)
+      @browser = create_browser
+      @browser.visit(@current_url)
     end
 
     private

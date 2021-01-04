@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'makuri/browser'
+require 'makuri/spider'
 require 'makuri/version'
 
 require 'makuri/browser_builder/base'

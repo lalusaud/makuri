@@ -4,11 +4,13 @@ module Makuri::BrowserBuilder
   class NetHttp < Base
     def visit(url)
       uri = URI(url)
-      http = Net::HTTP.new(uri.host, uri.port)
       headers = { 'User-Agent': user_agent }
 
       request = send("#{request_method}_request", uri.request_uri, headers)
-      http.request(request).body
+
+      Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == 'https')) do |http|
+        http.request(request)
+      end.body
     end
 
     private

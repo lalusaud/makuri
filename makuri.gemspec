@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.5'
 
+  spec.add_runtime_dependency 'addressable', '~> 2.7'
+  spec.add_runtime_dependency 'nokogiri'
   spec.add_runtime_dependency 'selenium-webdriver', '~> 3.142'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
