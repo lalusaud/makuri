@@ -3,14 +3,14 @@
 Makuri is a Web-crawling framework for Ruby.
 
 # Usage
-In this example, we are going to crawl the [quotes website](http://quotes.toscrape.com) and scrape data as:
+In this example, we are going to crawl the [quotes website](https://quotes.toscrape.com) and scrape data as:
 ```ruby
 # quotes_spider.rb
 require 'makuri'
 
 class QuotesSpider
   include Makuri::Spider
-  start_urls ['http://quotes.toscrape.com/tag/humor/']
+  start_urls ['https://quotes.toscrape.com/tag/humor/']
 
   def parse
     response.css('div.quote').each { |quote| extract(quote) }
