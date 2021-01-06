@@ -32,8 +32,8 @@ end
 QuotesSpider.run
 ```
 Now save the file to ```quotes_spider.rb``` file and run it as:
-```
-$> ruby quotes_spider.rb > quotes.json
+```sh
+$ ruby quotes_spider.rb > quotes.json
 ```
 When it's done, you will find all the quotes saved to ```quotes.json``` file. It's that easy.
 
@@ -53,8 +53,8 @@ Everyone is encouraged to help improve this project. Here are a few ways you can
 To get started with development:
 
 ```sh
-git clone https://github.com/lalusaud/makuri.git
-cd rover
-bundle install
-bundle exec rake test
+$ git clone https://github.com/lalusaud/makuri.git
+$ cd makuri
+$ bundle install
+$ bundle exec rake test
 ```
