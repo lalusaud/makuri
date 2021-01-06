@@ -1,3 +1,5 @@
-## 0.1.0 (2020-12-31)
+## 0.1.0 (2021-01-05)
 
-- Unreleased - Work in Progress
+- First Release
+- Add Basic Browser Builders for crawling web pages
+- Add Spider Framework to support scraping
