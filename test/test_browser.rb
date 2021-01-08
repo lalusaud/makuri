@@ -4,7 +4,7 @@ require_relative 'test_helper'
 
 class BrowserTest < Minitest::Test
   def setup
-    @url = 'http://www.example.com'
+    @url = 'https://www.example.com'
   end
 
   def test_invalid_url
