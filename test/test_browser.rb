@@ -33,12 +33,12 @@ class BrowserTest < Minitest::Test
 
   def test_run_with_js
     # Selenium Webdriver makes call to remote site, need to find a way to mock this
-    res = Makuri::Browser.new(url: @url, render_js: true).follow
+    res = Makuri::Browser.new(url: @url, js: true).follow
     assert_includes res, 'Example Domain'
   end
 
   def test_run_with_js_and_post
-    err = assert_raises(RuntimeError) { Makuri::Browser.new(url: @url, render_js: true, request_method: :post).follow }
+    err = assert_raises(RuntimeError) { Makuri::Browser.new(url: @url, js: true, request_method: :post).follow }
     assert_includes err.message, 'POST request not allowed for JS Engine'
   end
 end

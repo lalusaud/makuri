@@ -38,7 +38,7 @@ module Makuri::BrowserBuilder
     end
 
     def invalid_request_message
-      "#{request_method.to_s.upcase} request not allowed for JS Engine. Try without 'render_js=true' argument!"
+      "#{request_method.to_s.upcase} request not allowed for JS Engine. Try without 'js=true' argument!"
     end
   end
 end

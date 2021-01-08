@@ -1,13 +1,13 @@
 module Makuri
   class Browser
-    attr_accessor :url, :render_js, :user_agent, :request_method, :request_body
+    attr_accessor :url, :js, :user_agent, :request_method, :request_body
 
     def initialize(options = {})
       @url            = options.fetch(:url, '')
       @request_method = options.fetch(:request_method, :get)
       @request_body   = options.fetch(:request_body, {})
 
-      @render_js      = options.fetch(:render_js, false)
+      @js             = options.fetch(:js, false)
       @user_agent     = options.fetch(
         :user_agent,
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
@@ -25,7 +25,7 @@ module Makuri
     private
 
     def create_browser
-      engine = render_js ? 'Chrome' : 'NetHttp'
+      engine = js ? 'Chrome' : 'NetHttp'
       builder = Object.const_get "Makuri::BrowserBuilder::#{engine}"
       builder.new browser_params
     end
