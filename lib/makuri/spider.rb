@@ -55,7 +55,7 @@ module Makuri
     end
 
     def absolute_url(relative_url)
-      Addressable::URI.join(browser.current_url, relative_url).to_s
+      Addressable::URI.join(browser.url, relative_url).to_s
     end
 
     private

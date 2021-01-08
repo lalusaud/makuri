@@ -14,8 +14,8 @@ module Makuri
       )
     end
 
-    def follow(url = '')
-      @url = url unless url.empty?
+    def follow(current_url = '')
+      @url = current_url unless current_url.empty?
       raise 'Invalid URL supplied' if url.empty?
 
       @browser = create_browser
