@@ -65,7 +65,7 @@ module Makuri
     end
 
     def update_response(url)
-      html = browser.follow absolute_url(url)
+      html = browser.request absolute_url(url)
       @response = Nokogiri::HTML(html)
     end
   end

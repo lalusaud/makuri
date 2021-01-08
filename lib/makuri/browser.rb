@@ -14,12 +14,29 @@ module Makuri
       )
     end
 
+    def browser
+      @browser ||= create_browser
+    end
+
+    # Only allow for capybara get request
     def follow(current_url = '')
       @url = current_url unless current_url.empty?
       raise 'Invalid URL supplied' if url.empty?
 
-      @browser = create_browser
-      @browser.visit(url)
+      raise invalid_request_without_get if request_method != :get
+
+      browser.visit(url)
+      browser
+    end
+
+    # Allow for NetHttp get request
+    def request(current_url = '')
+      @url = current_url unless current_url.empty?
+      raise 'Invalid URL supplied' if url.empty?
+
+      raise 'Invalid request type for js=true. Use #follow in place of #get' if js
+
+      browser.visit(url).body
     end
 
     private
@@ -27,7 +44,7 @@ module Makuri
     def create_browser
       engine = js ? 'Chrome' : 'NetHttp'
       builder = Object.const_get "Makuri::BrowserBuilder::#{engine}"
-      builder.new browser_params
+      builder.new(browser_params).build
     end
 
     def browser_params
@@ -36,6 +53,10 @@ module Makuri
         request_method: request_method,
         request_body: request_body
       }
+    end
+
+    def invalid_request_without_get
+      "#{request_method.to_s.upcase} request not allowed for JS Engine. Try without 'js=true' argument!"
     end
   end
 end

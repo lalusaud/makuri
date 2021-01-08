@@ -2,6 +2,10 @@ require 'net/http'
 
 module Makuri::BrowserBuilder
   class NetHttp < Base
+    def build
+      self
+    end
+
     def visit(url)
       uri = URI(url)
       headers = { 'User-Agent': user_agent }
@@ -10,7 +14,7 @@ module Makuri::BrowserBuilder
 
       Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == 'https')) do |http|
         http.request(request)
-      end.body
+      end
     end
 
     private
