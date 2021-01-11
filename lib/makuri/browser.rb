@@ -1,6 +1,6 @@
 module Makuri
   class Browser
-    attr_accessor :url, :js, :user_agent, :request_method, :request_body
+    attr_accessor :url, :js, :headless, :user_agent, :request_method, :request_body
 
     def initialize(options = {})
       @url            = options.fetch(:url, '')
@@ -8,6 +8,7 @@ module Makuri
       @request_body   = options.fetch(:request_body, {})
 
       @js             = options.fetch(:js, false)
+      @headless       = options.fetch(:headless, true)
       @user_agent     = options.fetch(
         :user_agent,
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
@@ -50,6 +51,7 @@ module Makuri
     def browser_params
       {
         user_agent: user_agent,
+        headless: headless,
         request_method: request_method,
         request_body: request_body
       }
