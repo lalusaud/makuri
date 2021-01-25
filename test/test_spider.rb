@@ -2,7 +2,8 @@ require_relative 'test_helper'
 
 class SpiderTest < Minitest::Test
   def setup
-    @start_url = 'http://localhost:3000'
+    @start_url = 'http://example.com'
+    stub_request(:get, @start_url).to_return(body: '<h1>Example Domain</h1>')
   end
 
   def test_start_urls
@@ -41,12 +42,12 @@ end
 
 class NoParseSpider
   include Makuri::Spider
-  start_urls ['http://localhost:3000']
+  start_urls ['http://example.com']
 end
 
 class QuotesSpider
   include Makuri::Spider
-  start_urls ['http://localhost:3000']
+  start_urls ['http://example.com']
 
   def parse; end
 
