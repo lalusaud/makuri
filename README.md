@@ -2,6 +2,21 @@
 
 Makuri is a Web-crawling framework for Ruby.
 
+# Install
+
+Add this to your application's Gemfile
+```ruby
+gem 'makuri'
+```
+And execute
+```sh
+$ bundle
+```
+Or install it as:
+```sh
+$ gem install makuri
+```
+
 # Usage
 In this example, we are going to crawl the [quotes website](https://quotes.toscrape.com) and scrape data as:
 ```ruby
