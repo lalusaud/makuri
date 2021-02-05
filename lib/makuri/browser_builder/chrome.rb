@@ -3,9 +3,12 @@ require 'selenium-webdriver'
 
 module Makuri::BrowserBuilder
   class Chrome < Base
+    attr_accessor :headless, :enable_images
+
     def initialize(options = {})
       super
-      @headless = options.fetch(:headless, true)
+      @headless      = options.fetch(:headless, true)
+      @enable_images = options.fetch(:enable_images, true)
     end
 
     def build
@@ -23,11 +26,11 @@ module Makuri::BrowserBuilder
         --disable-gpu
         --no-sandbox
         --disable-translate
-        --blink-settings=imagesEnabled=false
         --ignore-certificate-errors
       ]
-      args << '--headless' if @headless
-      args << "--user-agent=#{@user_agent}"
+      args << '--headless' if headless
+      args << "--user-agent=#{user_agent}"
+      args << "--blink-settings=imagesEnabled=#{enable_images}"
       Selenium::WebDriver::Chrome::Options.new(args: args)
     end
   end
