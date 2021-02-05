@@ -3,10 +3,6 @@ module Makuri
     attr_accessor :url, :js, :headless, :user_agent, :request_method, :request_body
 
     def initialize(options = {})
-      @url            = options.fetch(:url, '')
-      @request_method = options.fetch(:request_method, :get)
-      @request_body   = options.fetch(:request_body, {})
-
       @js             = options.fetch(:js, false)
       @headless       = options.fetch(:headless, true)
       @user_agent     = options.fetch(
@@ -20,24 +16,24 @@ module Makuri
     end
 
     # Only allow for capybara get request
-    def follow(current_url = '')
-      @url = current_url unless current_url.empty?
-      raise 'Invalid URL supplied' if url.empty?
+    def follow(url)
+      validate_url(url)
 
-      raise invalid_request_without_get if request_method != :get
-
-      browser.visit(url)
+      browser.visit(@url)
       browser
     end
 
     # Allow for NetHttp get request
-    def request(current_url = '')
-      @url = current_url unless current_url.empty?
-      raise 'Invalid URL supplied' if url.empty?
+    def request(url, options = {})
+      validate_url(url)
+
+      @request_method = options.fetch(:method, :get)
+      @request_body   = options.fetch(:body, {})
 
       raise 'Invalid request type for js=true. Use #follow in place of #get' if js
 
-      browser.visit(url).body
+      # return request body
+      browser.visit(@url).body
     end
 
     private
@@ -57,8 +53,10 @@ module Makuri
       }
     end
 
-    def invalid_request_without_get
-      "#{request_method.to_s.upcase} request not allowed for JS Engine. Try without 'js=true' argument!"
+    def validate_url(url = '')
+      @url = url
+      uri = URI.parse(url)
+      raise 'Invalid URL supplied' unless uri.is_a?(URI::HTTP) && !uri.host.nil?
     end
   end
 end
