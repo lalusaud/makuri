@@ -18,23 +18,30 @@ module Makuri
         @start_urls = urls
       end
 
+      def spider_options(**options)
+        @engine = options.fetch(:engine, :net_http)
+      end
+
       def run
         raise "Start URLs not found. Define start_urls for #{self}." unless defined? @start_urls
 
-        new(@start_urls).parse
+        @engine ||= :net_http
+
+        new(start_urls: @start_urls, engine: @engine).parse
       end
     end
 
-    attr_accessor :start_urls, :response
+    attr_accessor :start_urls, :engine, :response
 
-    def initialize(start_urls)
-      @start_urls = start_urls
+    def initialize(**config)
+      @start_urls = config.fetch(:start_urls, nil)
+      @engine     = config.fetch(:engine, :net_http)
 
       update_response(@start_urls[0])
     end
 
     def browser
-      @browser ||= Makuri::Browser.new
+      @browser ||= Makuri::Browser.new(engine: engine)
     end
 
     def parse

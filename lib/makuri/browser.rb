@@ -1,9 +1,9 @@
 module Makuri
   class Browser
-    attr_accessor :url, :js, :headless, :user_agent, :request_method, :request_body
+    attr_accessor :url, :engine, :headless, :user_agent, :request_method, :request_body
 
     def initialize(options = {})
-      @js             = options.fetch(:js, false)
+      @engine         = options.fetch(:engine, :net_http)
       @headless       = options.fetch(:headless, true)
       @user_agent     = options.fetch(
         :user_agent,
@@ -30,7 +30,7 @@ module Makuri
       @request_method = options.fetch(:method, :get)
       @request_body   = options.fetch(:body, {})
 
-      raise 'Invalid request type for js=true. Use #follow in place of #get' if js
+      raise 'Invalid request type. Use #follow in place of #get' if engine_chrome?
 
       # return request body
       browser.visit(@url).body
@@ -39,8 +39,8 @@ module Makuri
     private
 
     def create_browser
-      engine = js ? 'Chrome' : 'NetHttp'
-      builder = Object.const_get "Makuri::BrowserBuilder::#{engine}"
+      browser_engine = engine_chrome? ? 'Chrome' : 'NetHttp'
+      builder        = Object.const_get "Makuri::BrowserBuilder::#{browser_engine}"
       builder.new(browser_params).build
     end
 
@@ -57,6 +57,10 @@ module Makuri
       @url = url
       uri = URI.parse(url)
       raise 'Invalid URL supplied' unless uri.is_a?(URI::HTTP) && !uri.host.nil?
+    end
+
+    def engine_chrome?
+      engine == :chrome
     end
   end
 end

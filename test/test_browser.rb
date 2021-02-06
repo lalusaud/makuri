@@ -28,7 +28,7 @@ class BrowserTest < Minitest::Test
 
   def test_run_with_js
     # Selenium Webdriver makes call to remote site, need to find a way to mock this
-    res = Makuri::Browser.new(js: true).follow(@url)
+    res = Makuri::Browser.new(engine: :chrome).follow(@url)
     assert_includes res.body, 'Example Domain'
   end
 end
