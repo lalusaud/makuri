@@ -27,17 +27,17 @@ module Makuri
 
         @engine ||= :net_http
 
-        new(start_urls: @start_urls, engine: @engine).parse
+        @start_urls.each { |start_url| new(start_url: start_url, engine: @engine).parse }
       end
     end
 
-    attr_accessor :start_urls, :engine, :response
+    attr_accessor :engine, :response
 
     def initialize(**config)
-      @start_urls = config.fetch(:start_urls, nil)
-      @engine     = config.fetch(:engine, :net_http)
+      @start_url = config.fetch(:start_url, nil)
+      @engine    = config.fetch(:engine, :net_http)
 
-      update_response(@start_urls[0])
+      update_response(@start_url)
     end
 
     def browser
@@ -62,18 +62,23 @@ module Makuri
     end
 
     def absolute_url(relative_url)
-      Addressable::URI.join(browser.url.to_s, relative_url).to_s
+      Addressable::URI.join(base_url, relative_url).to_s
     end
 
     private
+
+    def base_url
+      @start_url || browser.url.to_s
+    end
 
     def valid_url?(url)
       defined?(url) && !url.to_s.empty?
     end
 
     def update_response(url)
-      html = browser.request absolute_url(url)
-      @response = Nokogiri::HTML(html)
+      res = browser.request(absolute_url(url)).html
+      # res = res.html if @engine == :chrome
+      @response = Nokogiri::HTML(res)
     end
   end
 end

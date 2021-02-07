@@ -9,31 +9,32 @@ module Makuri
         :user_agent,
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
       )
+
+      # Defaults
+      @request_method = :get
+      @request_body   = {}
     end
 
     def browser
       @browser ||= create_browser
     end
 
-    # Only allow for capybara get request
-    def follow(url)
-      validate_url(url)
-
-      browser.visit(@url)
-      browser
-    end
-
     # Allow for NetHttp get request
     def request(url, options = {})
-      validate_url(url)
+      @url = url
+      validate_url
 
-      @request_method = options.fetch(:method, :get)
-      @request_body   = options.fetch(:body, {})
+      return follow if engine_chrome?
 
-      raise 'Invalid request type. Use #follow in place of #get' if engine_chrome?
+      @request_method = options.fetch(:method, request_method)
+      @request_body   = options.fetch(:body, request_body)
+      browser.visit(@url)
+    end
 
-      # return request body
-      browser.visit(@url).body
+    # Only allow for capybara get request
+    def follow
+      browser.visit(@url)
+      browser
     end
 
     private
@@ -53,9 +54,8 @@ module Makuri
       }
     end
 
-    def validate_url(url = '')
-      @url = url
-      uri = URI.parse(url)
+    def validate_url
+      uri = URI.parse(@url)
       raise 'Invalid URL supplied' unless uri.is_a?(URI::HTTP) && !uri.host.nil?
     end
 

@@ -17,20 +17,30 @@ class SpiderTest < Minitest::Test
   end
 
   def test_browser
-    browser = QuotesSpider.new(start_urls: [@start_url]).browser
+    browser = QuotesSpider.new(start_url: @start_url).browser
     assert_instance_of Makuri::Browser, browser
   end
 
   def test_request_to
-    spider = QuotesSpider.new(start_urls: [@start_url])
+    spider = QuotesSpider.new(start_url: @start_url)
     response = spider.request_to :extract, url: @start_url
     assert_equal response, 'test'
   end
 
   def test_absolute_url
-    spider = QuotesSpider.new(start_urls: [@start_url])
+    spider = QuotesSpider.new(start_url: @start_url)
     url = spider.absolute_url('/test')
     assert_equal url, "#{@start_url}/test"
+  end
+
+  def test_capybara_browser_session
+    browser = QuotesSpider.new(start_url: @start_url, engine: :chrome).browser.browser
+    assert_instance_of Capybara::Session, browser
+  end
+
+  def test_net_http_browser
+    browser = QuotesSpider.new(start_url: @start_url).browser.browser
+    assert_instance_of Makuri::BrowserBuilder::NetHttp, browser
   end
 end
 

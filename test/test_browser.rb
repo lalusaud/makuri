@@ -8,7 +8,7 @@ class BrowserTest < Minitest::Test
   end
 
   def test_invalid_url
-    err = assert_raises(RuntimeError) { Makuri::Browser.new.follow('invalid_url') }
+    err = assert_raises(RuntimeError) { Makuri::Browser.new.request('invalid_url') }
     assert_equal err.message, 'Invalid URL supplied'
   end
 
@@ -16,19 +16,19 @@ class BrowserTest < Minitest::Test
     stub_request(:get, @url).to_return(body: 'test')
 
     res = Makuri::Browser.new.request(@url)
-    assert_equal res, 'test'
+    assert_equal res.html, 'test'
   end
 
   def test_run_with_post_data
     stub_request(:post, @url).with(body: 'param1=test').to_return(body: 'test')
 
     res = Makuri::Browser.new.request(@url, { method: :post, body: 'param1=test' })
-    assert_equal res, 'test'
+    assert_equal res.html, 'test'
   end
 
   def test_run_with_js
     # Selenium Webdriver makes call to remote site, need to find a way to mock this
-    res = Makuri::Browser.new(engine: :chrome).follow(@url)
-    assert_includes res.body, 'Example Domain'
+    res = Makuri::Browser.new(engine: :chrome).request(@url)
+    assert_includes res.html, 'Example Domain'
   end
 end
