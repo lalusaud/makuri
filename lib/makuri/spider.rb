@@ -20,6 +20,7 @@ module Makuri
 
       def spider_options(**options)
         @engine = options.fetch(:engine, :net_http)
+        @headless = options.featch(:headless, false)
       end
 
       def run
