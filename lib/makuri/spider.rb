@@ -33,7 +33,7 @@ module Makuri
       end
     end
 
-    attr_accessor :engine, :response
+    attr_accessor :engine, :headless, :response
 
     def initialize(**config)
       @start_url = config.fetch(:start_url, nil)
