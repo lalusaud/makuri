@@ -26,8 +26,9 @@ module Makuri
         raise "Start URLs not found. Define start_urls for #{self}." unless defined? @start_urls
 
         @engine ||= :net_http
+        @headless ||= :headless
 
-        @start_urls.each { |start_url| new(start_url: start_url, engine: @engine).parse }
+        @start_urls.each { |start_url| new(start_url: start_url, engine: @engine, headless: @headless).parse }
       end
     end
 
@@ -36,12 +37,13 @@ module Makuri
     def initialize(**config)
       @start_url = config.fetch(:start_url, nil)
       @engine    = config.fetch(:engine, :net_http)
+      @headless  = config.fetch(:headless, false)
 
       update_response(@start_url)
     end
 
     def browser
-      @browser ||= Makuri::Browser.new(engine: engine)
+      @browser ||= Makuri::Browser.new(engine: engine, headless: headless)
     end
 
     def parse
