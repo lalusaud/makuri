@@ -1,3 +1,8 @@
+## 0.4.0 (2024-06-13)
+- Add Ferrum support
+- Remove Capybara/chrome support
+- Bug fixes
+
 ## 0.3.0 (2021-02-07)
 - Allow scrape from multiple start_urls
 - Add :engine support to Spider

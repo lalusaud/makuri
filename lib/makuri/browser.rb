@@ -24,12 +24,18 @@ module Makuri
       @url = url
       validate_url
 
-      return follow if engine_chrome?
+      return follow if ['Ferrum', 'Chrome'].include? browser_engine
 
       @request_method = options.fetch(:method, request_method)
       @request_body   = options.fetch(:body, request_body)
       browser.visit(@url)
     end
+
+    def quit
+      browser.respond_to?(:quit) ? browser.quit : nil
+    end
+
+    private
 
     # Only allow for capybara get request
     def follow
@@ -37,10 +43,7 @@ module Makuri
       browser
     end
 
-    private
-
     def create_browser
-      browser_engine = engine_chrome? ? 'Chrome' : 'NetHttp'
       builder        = Object.const_get "Makuri::BrowserBuilder::#{browser_engine}"
       builder.new(browser_params).build
     end
@@ -59,8 +62,13 @@ module Makuri
       raise 'Invalid URL supplied' unless uri.is_a?(URI::HTTP) && !uri.host.nil?
     end
 
-    def engine_chrome?
-      engine == :chrome
+    def browser_engine
+      case engine
+      when :ferrum
+        'Ferrum'
+      else
+        'NetHttp'
+      end
     end
   end
 end

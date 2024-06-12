@@ -33,11 +33,6 @@ class SpiderTest < Minitest::Test
     assert_equal url, "#{@start_url}/test"
   end
 
-  def test_capybara_browser_session
-    browser = QuotesSpider.new(start_url: @start_url, engine: :chrome).browser.browser
-    assert_instance_of Capybara::Session, browser
-  end
-
   def test_net_http_browser
     browser = QuotesSpider.new(start_url: @start_url).browser.browser
     assert_instance_of Makuri::BrowserBuilder::NetHttp, browser

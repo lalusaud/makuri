@@ -20,14 +20,14 @@ module Makuri
 
       def spider_options(**options)
         @engine = options.fetch(:engine, :net_http)
-        @headless = options.fetch(:headless, false)
+        @headless = options.fetch(:headless, true)
       end
 
       def run
         raise "Start URLs not found. Define start_urls for #{self}." unless defined? @start_urls
 
         @engine ||= :net_http
-        @headless ||= :headless
+        @headless = defined?(@headless) ? @headless : true
 
         @start_urls.each { |start_url| new(start_url: start_url, engine: @engine, headless: @headless).parse }
       end
@@ -38,13 +38,19 @@ module Makuri
     def initialize(**config)
       @start_url = config.fetch(:start_url, nil)
       @engine    = config.fetch(:engine, :net_http)
-      @headless  = config.fetch(:headless, false)
+      @headless  = config.fetch(:headless, true)
 
       update_response(@start_url)
+      browser_quit_wrapper { parse }
     end
 
     def browser
       @browser ||= Makuri::Browser.new(engine: engine, headless: headless)
+    end
+
+    def browser_quit_wrapper
+      yield
+      browser.quit
     end
 
     def parse
@@ -80,7 +86,6 @@ module Makuri
 
     def update_response(url)
       res = browser.request(absolute_url(url)).html
-      # res = res.html if @engine == :chrome
       @response = Nokogiri::HTML(res)
     end
   end

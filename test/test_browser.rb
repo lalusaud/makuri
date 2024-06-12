@@ -27,8 +27,8 @@ class BrowserTest < Minitest::Test
   end
 
   def test_run_with_js
-    # Selenium Webdriver makes call to remote site, need to find a way to mock this
-    res = Makuri::Browser.new(engine: :chrome).request(@url)
+    # TODO: Ferrum makes call to remote site, need to find a way to mock this
+    res = Makuri::Browser.new(engine: :ferrum).request(@url)
     assert_includes res.html, 'Example Domain'
   end
 end
