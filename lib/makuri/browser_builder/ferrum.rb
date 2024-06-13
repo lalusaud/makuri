@@ -2,43 +2,45 @@ require 'ferrum'
 
 module Makuri::BrowserBuilder
   class Ferrum < Base
-    attr_accessor :headless, :html
+    attr_accessor :headless, :timeout, :html, :ferrum_browser
 
     def initialize(options = {})
       super
-      @headless      = options.fetch(:headless, true)
+      @headless = options.fetch(:headless, true)
+      @timeout = options.fetch(:timeout, 60)
     end
 
     def build
-      headers = { 'User-Agent': user_agent }
-      @ferrum = ::Ferrum::Browser.new(headless: @headless, headers: headers)
+      @ferrum_browser = ::Ferrum::Browser.new(browser_options)
       self
     end
 
     def visit(url)
-      @ferrum.go_to url
-      @html = @ferrum.body
+      page.go_to url
+      @html = page.body
       self
     end
 
     def quit
-      @ferrum.quit
+      ferrum_browser.quit
+    end
+
+    def page
+      @page ||= ferrum_browser.create_page
+    end
+
+    def current_response
+      Nokogiri::HTML page.body
     end
 
     private
 
-    # TODO:
-    # def browser_options
-    #   args = %w[
-    #     --disable-gpu
-    #     --no-sandbox
-    #     --disable-translate
-    #     --ignore-certificate-errors
-    #   ]
-    #   args << '--headless' if headless
-    #   args << "--user-agent=#{user_agent}"
-    #   args << "--blink-settings=imagesEnabled=#{enable_images}"
-    #   Selenium::WebDriver::Chrome::Options.new(args: args)
-    # end
+    def browser_options
+      {
+        headless: headless,
+        timeout: timeout,
+        headers: { 'User-Agent': user_agent }
+      }
+    end
   end
 end
