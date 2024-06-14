@@ -18,6 +18,8 @@ $ gem install makuri
 ```
 
 # Usage
+
+### Example - 1
 In this example, we are going to crawl the [quotes website](https://quotes.toscrape.com) and scrape data as:
 ```ruby
 # quotes_spider.rb
@@ -51,6 +53,46 @@ Now save the file to ```quotes_spider.rb``` file and run it as:
 $ ruby quotes_spider.rb > quotes.json
 ```
 When it's done, you will find all the quotes saved to ```quotes.json``` file. It's that easy.
+
+
+### Example - 2
+Now, let's try to scrape another site with JavaScript rendered site with Dynamic HTML and infinite scroll:
+```ruby
+# infinite_scroll_spider.rb
+require 'makuri'
+
+class InfiniteScrollSpider
+  include Makuri::Spider
+  spider_options engine: :ferrum, headless: true
+
+  start_urls ['https://infinite-scroll.com/demo/full-page/']
+
+  def parse
+    post_title_xpath = '//article/h2'
+    count = response.xpath(post_title_xpath).count
+
+    current_response = nil
+    loop do
+      browser.page.execute('window.scrollBy(0,10000)'); sleep 2
+
+      current_response = browser.current_response
+      new_count = current_response.xpath(post_title_xpath).count
+
+      logger.info '> Pagination is done' and break if count == new_count
+
+      count = new_count
+      logger.info "> Continue scrolling, current count is #{count}..."
+    end
+
+    posts_headers = current_response.xpath(post_title_xpath).map(&:text)
+    logger.info "> All post titles: #{posts_headers.join('; ')}"
+  end
+end
+```
+Now save the file to ```infinite_scroll_spider.rb``` and run it as:
+```sh
+$ ruby infinite_scroll_spider.rb
+```
 
 ## History
 

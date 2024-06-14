@@ -5,10 +5,7 @@ module Makuri
     def initialize(options = {})
       @engine         = options.fetch(:engine, :net_http)
       @headless       = options.fetch(:headless, true)
-      @user_agent     = options.fetch(
-        :user_agent,
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
-      )
+      @user_agent     = options.fetch(:user_agent, 'Makuri browser agent')
 
       # Defaults
       @request_method = :get
@@ -24,7 +21,7 @@ module Makuri
       @url = url
       validate_url
 
-      return follow if ['Ferrum', 'Chrome'].include? browser_engine
+      return follow if browser_engine == 'Ferrum'
 
       @request_method = options.fetch(:method, request_method)
       @request_body   = options.fetch(:body, request_body)
@@ -33,6 +30,14 @@ module Makuri
 
     def quit
       browser.respond_to?(:quit) ? browser.quit : nil
+    end
+
+    def page
+      browser.respond_to?(:page) ? browser.page : browser
+    end
+
+    def current_response
+      browser.respond_to?(:current_response) ? browser.current_response : nil
     end
 
     private
@@ -44,7 +49,7 @@ module Makuri
     end
 
     def create_browser
-      builder        = Object.const_get "Makuri::BrowserBuilder::#{browser_engine}"
+      builder = Object.const_get "Makuri::BrowserBuilder::#{browser_engine}"
       builder.new(browser_params).build
     end
 
@@ -63,12 +68,7 @@ module Makuri
     end
 
     def browser_engine
-      case engine
-      when :ferrum
-        'Ferrum'
-      else
-        'NetHttp'
-      end
+      engine == :ferrum ? 'Ferrum' : 'NetHttp'
     end
   end
 end
