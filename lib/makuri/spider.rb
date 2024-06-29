@@ -21,6 +21,7 @@ module Makuri
       def spider_options(**options)
         @engine = options.fetch(:engine, :net_http)
         @headless = options.fetch(:headless, true)
+        @browser_options = options.fetch(:browser_options, {})
       end
 
       def run
@@ -28,32 +29,44 @@ module Makuri
 
         @engine ||= :net_http
         @headless = defined?(@headless) ? @headless : true
+        @browser_options ||= {}
 
         @start_urls.each do |start_url|
-          spider = new(start_url: start_url, engine: @engine, headless: @headless)
+          spider = new(start_url: start_url, engine: @engine, headless: @headless, browser_options: @browser_options)
+          spider.start
           spider.parse
           spider.browser.quit
+          spider.finish
         end
       end
     end
 
-    attr_accessor :engine, :headless, :response, :logger
+    attr_accessor :engine, :headless, :browser_options, :response, :logger
 
     def initialize(**config)
       @start_url = config.fetch(:start_url, nil)
       @engine    = config.fetch(:engine, :net_http)
       @headless  = config.fetch(:headless, true)
       @logger    = Logger.new(STDOUT)
+      @browser_options = config.fetch(:browser_options, {})
 
       update_response(@start_url)
     end
 
     def browser
-      @browser ||= Makuri::Browser.new(engine: engine, headless: headless)
+      @browser ||= Makuri::Browser.new(engine: engine, headless: headless, browser_options: browser_options)
     end
 
     def parse
       raise NotImplementedError, "Define #parse method for #{self.class}."
+    end
+
+    def start
+      logger.info('Spider starting.')
+    end
+
+    def finish
+      logger.info('Spider finished.')
     end
 
     def request_to(handler, **params)
