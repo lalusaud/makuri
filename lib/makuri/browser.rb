@@ -1,12 +1,13 @@
 module Makuri
   class Browser
-    attr_accessor :url, :engine, :headless, :browser_options, :user_agent, :request_method, :request_body
+    attr_accessor :url, :engine, :headless, :browser_options, :user_agent, :request_method, :request_body, :blocked_filetypes
 
     def initialize(options = {})
       @engine         = options.fetch(:engine, :net_http)
       @headless       = options.fetch(:headless, true)
       @user_agent     = options.fetch(:user_agent, 'Makuri browser agent')
       @browser_options = options.fetch(:browser_options, {})
+      @blocked_filetypes = options.fetch(:blocked_filetypes, [])
 
       # Defaults
       @request_method = :get
@@ -60,7 +61,8 @@ module Makuri
         headless: headless,
         browser_options: browser_options,
         request_method: request_method,
-        request_body: request_body
+        request_body: request_body,
+        blocked_filetypes: blocked_filetypes
       }
     end
 
