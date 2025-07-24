@@ -63,7 +63,7 @@ require 'makuri'
 
 class InfiniteScrollSpider
   include Makuri::Spider
-  spider_options engine: :ferrum, headless: true
+  spider_options engine: :ferrum, headless: true, blocked_filetypes: ['jpg', 'png', 'css', 'js', 'woff', 'woff2', 'ttf', 'eot']
 
   start_urls ['https://infinite-scroll.com/demo/full-page/']
 
